@@ -12,3 +12,5 @@ logs/
 .idea/
 *.iml
 coverage/   
+backend/node_modules/
+frontend/node_modules/

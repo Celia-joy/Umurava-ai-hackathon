@@ -11,7 +11,7 @@ interface RankedResponse {
   recommendation: string;
 }
 
-const modelName = "gemini-1.5-flash";
+const modelName = "gemini-2.0-flash-latest";
 
 export const analyzeCandidatesWithGemini = async (
   jobSummary: Record<string, unknown>,
