@@ -1,0 +1,9 @@
+{
+  "pages": {
+    "/api/proxy/[...path]/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/proxy/[...path]/route.js"
+    ]
+  }
+}

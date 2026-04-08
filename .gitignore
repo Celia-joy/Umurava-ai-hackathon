@@ -1,0 +1,14 @@
+.codex
+.env
+.env.example
+node_modules/
+dist/
+build/
+logs/
+*.log
+*.env       
+.DS_Store
+.vscode/
+.idea/
+*.iml
+coverage/   
