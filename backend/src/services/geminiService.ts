@@ -13,6 +13,30 @@ interface RankedResponse {
 
 const modelName = "gemini-2.0-flash-latest";
 
+const parseGeminiJson = (text: string): RankedResponse[] => {
+  const sanitized = text
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+
+  const parsed = JSON.parse(sanitized) as unknown;
+  if (!Array.isArray(parsed)) {
+    throw new Error("Gemini response was not a JSON array");
+  }
+
+  return parsed as RankedResponse[];
+};
+
+const getErrorStatus = (error: unknown) => {
+  if (typeof error === "object" && error !== null && "status" in error) {
+    const status = (error as { status?: unknown }).status;
+    return typeof status === "number" ? status : undefined;
+  }
+
+  return undefined;
+};
+
 export const analyzeCandidatesWithGemini = async (
   jobSummary: Record<string, unknown>,
   candidates: CandidatePayload[],
@@ -64,12 +88,20 @@ JSON format:
 ]
 `;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text().trim();
-  const sanitized = text.replace(/^```json/, "").replace(/^```/, "").replace(/```$/, "").trim();
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().trim();
 
-  return {
-    model: modelName,
-    ranked: JSON.parse(sanitized) as RankedResponse[]
-  };
+    return {
+      model: modelName,
+      ranked: parseGeminiJson(text)
+    };
+  } catch (error) {
+    if (getErrorStatus(error) === 429) {
+      throw new Error("Gemini API rate limit exceeded. Please try again later.");
+    }
+
+    console.error("Error analyzing candidates with Gemini:", error);
+    throw new Error("Failed to analyze candidates with Gemini");
+  }
 };
