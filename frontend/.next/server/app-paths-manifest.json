@@ -1,4 +1,5 @@
 {
   "/api/proxy/[...path]/route": "app/api/proxy/[...path]/route.js",
-  "/dashboard/recruiter/page": "app/dashboard/recruiter/page.js"
+  "/dashboard/recruiter/page": "app/dashboard/recruiter/page.js",
+  "/results/[jobId]/page": "app/results/[jobId]/page.js"
 }
