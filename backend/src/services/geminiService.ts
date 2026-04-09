@@ -3,14 +3,14 @@ import { env } from "../config/env";
 import { CandidatePayload } from "../utils/scoreCandidates";
 
 interface RankedResponse {
+  applicationId?: string;
   rank: number;
   name: string;
   score: number;
   strengths: string[];
   gaps: string[];
   recommendation: string;
-  whySelected?: string;
-  whyNotSelected?: string;
+  comparisonInsight: string;
 }
 
 const modelName = "gemini-2.0-flash";
@@ -25,8 +25,7 @@ const stripCodeFences = (text: string) =>
     .trim();
 
 const parseGeminiJson = (text: string): RankedResponse[] => {
-  const sanitized = stripCodeFences(text);
-  const parsed = JSON.parse(sanitized) as unknown;
+  const parsed = JSON.parse(stripCodeFences(text)) as unknown;
   if (!Array.isArray(parsed)) {
     throw new Error("Gemini response was not a JSON array");
   }
@@ -35,14 +34,14 @@ const parseGeminiJson = (text: string): RankedResponse[] => {
     const candidate = item as Partial<RankedResponse>;
 
     return {
+      applicationId: typeof candidate.applicationId === "string" ? candidate.applicationId : undefined,
       rank: typeof candidate.rank === "number" ? candidate.rank : index + 1,
       name: typeof candidate.name === "string" ? normalizeWhitespace(candidate.name) : `Candidate ${index + 1}`,
-      score: typeof candidate.score === "number" ? candidate.score : 0,
+      score: typeof candidate.score === "number" ? Math.max(0, Math.min(100, candidate.score)) : 0,
       strengths: Array.isArray(candidate.strengths) ? candidate.strengths.filter((value): value is string => typeof value === "string") : [],
       gaps: Array.isArray(candidate.gaps) ? candidate.gaps.filter((value): value is string => typeof value === "string") : [],
       recommendation: typeof candidate.recommendation === "string" ? candidate.recommendation.trim() : "",
-      whySelected: typeof candidate.whySelected === "string" ? candidate.whySelected.trim() : "",
-      whyNotSelected: typeof candidate.whyNotSelected === "string" ? candidate.whyNotSelected.trim() : ""
+      comparisonInsight: typeof candidate.comparisonInsight === "string" ? candidate.comparisonInsight.trim() : ""
     };
   });
 };
@@ -56,29 +55,30 @@ const getErrorStatus = (error: unknown) => {
   return undefined;
 };
 
-const buildFallbackRanking = (candidates: CandidatePayload[], topCount: number): RankedResponse[] =>
+const buildFallbackRanking = (candidates: CandidatePayload[]): RankedResponse[] =>
   [...candidates]
     .sort((a, b) => b.computed.weightedScore - a.computed.weightedScore)
-    .map((candidate, index) => ({
+    .map((candidate, index, array) => ({
+      applicationId: candidate.applicationId,
       rank: index + 1,
       name: candidate.name,
       score: candidate.computed.weightedScore,
       strengths: [
-        `Weighted baseline score of ${candidate.computed.weightedScore} supported by structured evaluation`,
-        candidate.skills.length ? `Relevant skills include ${candidate.skills.slice(0, 4).join(", ")}` : "Profile information was normalized from uploaded materials"
+        `${candidate.matchedSkills.length} required skills matched`,
+        candidate.headline || "Strong structured profile coverage"
       ],
-      gaps: candidate.skills.length ? [] : ["Limited structured skill data was available in the submitted profile"],
-      recommendation: "Fallback shortlist generated from weighted scoring because Gemini analysis was temporarily unavailable.",
-      whySelected: "Selected based on the strongest weighted alignment across skills, experience, education, and role relevance.",
-      whyNotSelected: index < topCount
-        ? "Still has some gaps, but the overall baseline score placed this candidate inside the shortlist."
-        : "Not selected because the weighted baseline score was lower than the shortlist threshold."
+      gaps: candidate.missingSkills.length ? candidate.missingSkills.slice(0, 4) : ["No major requirement gaps detected"],
+      recommendation: candidate.computed.weightedScore >= 75
+        ? "Strong shortlist candidate based on deterministic scoring."
+        : "Consider for further review if role priorities are flexible.",
+      comparisonInsight: array[index + 1]
+        ? `${candidate.name} edges the next candidate with a stronger weighted profile against the stated role criteria.`
+        : `${candidate.name} leads this shortlist on weighted fit.`
     }));
 
 export const analyzeCandidatesWithGemini = async (
   jobSummary: Record<string, unknown>,
-  candidates: CandidatePayload[],
-  topCount: number
+  candidates: CandidatePayload[]
 ) => {
   if (!env.geminiApiKey) {
     throw new Error("Missing GEMINI_API_KEY");
@@ -86,83 +86,78 @@ export const analyzeCandidatesWithGemini = async (
 
   const client = new GoogleGenerativeAI(env.geminiApiKey);
   const model = client.getGenerativeModel({ model: modelName });
+  const profiles = candidates.map((candidate) => ({
+    applicationId: candidate.applicationId,
+    applicantId: candidate.applicantId,
+    name: candidate.name,
+    headline: candidate.headline,
+    talentProfile: candidate.talentProfile
+  }));
+  const scores = candidates.map((candidate) => ({
+    applicationId: candidate.applicationId,
+    name: candidate.name,
+    weightedScore: candidate.computed.weightedScore,
+    components: candidate.computed,
+    matchedSkills: candidate.matchedSkills,
+    missingSkills: candidate.missingSkills
+  }));
 
   const prompt = `
 You are an expert recruiter AI.
 
-Job Description:
+Job Requirements:
 ${JSON.stringify(jobSummary, null, 2)}
 
-Candidates:
-${JSON.stringify(candidates, null, 2)}
+Talent Profiles (Structured JSON):
+${JSON.stringify(profiles, null, 2)}
+
+Precomputed Scores:
+${JSON.stringify(scores, null, 2)}
 
 Instructions:
-- Evaluate ALL candidates
-- Use the provided computed scores as a baseline, but independently reason from the job and candidate content
-- Score each candidate from 0 to 100
-- Rank all candidates against each other
-- Select the top ${topCount}
-- Return the FULL ranked list for all candidates, not only the shortlisted subset
-- For each candidate provide:
-  - rank
-  - name
-  - score
-  - strengths
-  - gaps
-  - recommendation
-  - whySelected
-  - whyNotSelected
-- Be objective and consistent
-- Avoid demographic, gender, age, ethnicity, or other protected-attribute assumptions
-- Compare candidates against each other
-- Return STRICT JSON only with no markdown
 
-JSON format:
-[
-  {
-    "rank": 1,
-    "name": "Candidate Name",
-    "score": 91,
-    "strengths": ["..."],
-    "gaps": ["..."],
-    "recommendation": "...",
-    "whySelected": "...",
-    "whyNotSelected": "..."
-  }
-]
+* Evaluate ALL candidates fairly and consistently
+* Compare candidates against each other
+* Respect the weighted scoring provided
+* Adjust scores slightly if justified
+* Rank candidates from best to worst
+
+For each candidate return:
+
+* applicationId
+* rank
+* name
+* score (0–100)
+* strengths (based on schema fields)
+* gaps (missing skills, experience, etc.)
+* recommendation
+* comparisonInsight (why this candidate ranks above the next one)
+
+Ensure fairness and avoid bias.
+
+Return STRICT JSON only.
 `;
 
   try {
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        const result = await model.generateContent({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            temperature: attempt === 0 ? 0.2 : 0.1
-          }
-        });
-        const text = result.response.text().trim();
-
-        return {
-          model: modelName,
-          ranked: parseGeminiJson(text)
-        };
-      } catch (error) {
-        if (attempt === 1) {
-          throw error;
-        }
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        temperature: 0.1
       }
-    }
+    });
 
-    throw new Error("Gemini retries exhausted");
+    return {
+      model: modelName,
+      ranked: parseGeminiJson(result.response.text().trim())
+    };
   } catch (error) {
     console.error("Error analyzing candidates with Gemini:", error);
     const fallbackModelName = getErrorStatus(error) === 429 ? `${modelName}-rate-limited-fallback` : `${modelName}-fallback`;
 
     return {
       model: fallbackModelName,
-      ranked: buildFallbackRanking(candidates, topCount)
+      ranked: buildFallbackRanking(candidates)
     };
   }
 };

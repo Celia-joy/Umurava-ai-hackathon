@@ -2,45 +2,50 @@
 
 ## System Overview
 
-The platform is split into a separately deployable frontend and backend:
+The platform is a two-tier deployment:
 
 - `frontend`
-  - Next.js App Router application
+  - Next.js App Router
   - Redux Toolkit state management
-  - Tailwind-based presentation layer
+  - Recruiter and applicant dashboards
 - `backend`
   - Express REST API
-  - Mongoose domain models
-  - Gemini integration and CV parsing services
+  - MongoDB + Mongoose
+  - Zod validation
+  - Multer upload handling
+  - PDF/CSV ingestion
+  - Gemini ranking service
 
 ## Core Backend Domains
 
 - `User`
-  - Recruiter or applicant role
-  - Optional applicant profile with name, skills, experience, and education
+  - recruiter or applicant
+  - applicant profile stored in the official talent profile schema
 - `Job`
-  - Recruiter-owned role definition and requirements
+  - recruiter-owned role definition
+  - includes required skills, project keywords, certifications, and availability requirement
 - `Application`
-  - Job application with parsed CV text and weighted AI baseline scores
+  - stores CV text, parsed profile, normalized profile, and deterministic score breakdown
 - `ScreeningResult`
-  - Persisted shortlist output from Gemini analysis
+  - persisted AI ranking output, comparison insight, fairness summary, and recruiter insights
 
 ## Request Flow
 
-1. Auth routes issue JWTs after login or registration.
-2. Recruiters create jobs through `/jobs`.
-3. Applicants upload a CV through `/applications`.
-4. The backend parses the PDF and stores extracted text with the application.
-5. Recruiters analyze a job through `/ai/analyze`.
-6. Screening results are persisted and later fetched via `/ai/results/:jobId`.
+1. `/auth` creates or authenticates users with JWTs.
+2. `/jobs` stores recruiter job requirements.
+3. `/applications` accepts multipart form data with `talentProfile` JSON and optional `cv`.
+4. The backend parses CV text, converts it into the talent profile shape, and normalizes candidate data.
+5. `/ai/analyze` computes deterministic scores for every applicant on the job.
+6. Gemini compares all candidates in one pass and returns strict JSON rankings.
+7. Results are saved and exposed through `/ai/results/:jobId`.
 
 ## Frontend State Model
 
 - `auth`
-  - User identity, token, auth loading/error state
+  - token, user, loading, error
 - `jobs`
-  - Job list and recruiter-owned job management
+  - open roles and recruiter-created jobs
 - `applications`
-  - Applicant submissions, recruiter applicant lists, and profile state
+  - applicant submissions, recruiter applicant lists, and profile updates
 - `ai`
-  - Screening result payload and AI loading/error state
+  - stored shortlist result, loading, error

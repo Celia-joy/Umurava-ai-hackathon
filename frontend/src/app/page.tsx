@@ -2,15 +2,15 @@ import Link from "next/link";
 import { Card, SectionHeading } from "@/components/ui";
 
 const recruiterFeatures = [
-  "Post structured jobs with eligibility, education, and experience requirements",
-  "Review applicants, trigger one-shot Gemini analysis, and see ranked shortlists",
-  "Get explainable decisions with strengths, gaps, and candidate comparisons"
+  "Post structured jobs with weighted scoring inputs across skills, projects, certifications, and availability",
+  "Review applicants, trigger Gemini analysis across all candidates, and see ranked shortlists",
+  "Get explainable decisions with fairness notes, skill gaps, and side-by-side comparisons"
 ];
 
 const applicantFeatures = [
-  "Create a detailed talent profile with skills, experience, and education",
-  "Upload a PDF CV and apply to opportunities from a central jobs board",
-  "Understand skill gaps and how your profile maps to recruiter expectations"
+  "Create the official talent profile with basic info, skills, languages, experience, projects, and social links",
+  "Upload a PDF CV and apply with both structured and unstructured candidate data",
+  "Understand skill gaps and how your profile maps to recruiter requirements"
 ];
 
 export default function Home() {
@@ -23,10 +23,10 @@ export default function Home() {
               AI Recruitment Screening
             </span>
             <h1 className="text-5xl font-semibold leading-tight text-slate-900">
-              Screen every applicant in one Gemini-powered pass.
+              Turn candidate profiles into explainable, hackathon-ready shortlists.
             </h1>
             <p className="text-lg text-slate-600">
-              Built for fast-moving hiring teams that want consistent ranking, explainable AI decisions, and clean collaboration between recruiters and talent.
+              Built for fast-moving hiring teams that want structured talent data, fair AI rankings, recruiter-grade visibility, and a polished demo-ready workflow.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/auth" className="rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white">
@@ -41,13 +41,15 @@ export default function Home() {
         <Card className="p-8">
           <SectionHeading
             title="AI Decision Flow"
-            subtitle="Weighted scoring anchors every review before Gemini compares candidates against one another."
+            subtitle="Deterministic scoring anchors every review before Gemini compares candidates against one another."
           />
           <div className="space-y-4 text-sm text-slate-700">
             <div className="rounded-2xl bg-brand-50 p-4">Skills 40%</div>
-            <div className="rounded-2xl bg-brand-50 p-4">Experience 30%</div>
-            <div className="rounded-2xl bg-brand-50 p-4">Education 20%</div>
-            <div className="rounded-2xl bg-brand-50 p-4">Relevance 10%</div>
+            <div className="rounded-2xl bg-brand-50 p-4">Experience 25%</div>
+            <div className="rounded-2xl bg-brand-50 p-4">Projects 15%</div>
+            <div className="rounded-2xl bg-brand-50 p-4">Education 10%</div>
+            <div className="rounded-2xl bg-brand-50 p-4">Certifications 5%</div>
+            <div className="rounded-2xl bg-brand-50 p-4">Availability 5%</div>
           </div>
         </Card>
       </section>

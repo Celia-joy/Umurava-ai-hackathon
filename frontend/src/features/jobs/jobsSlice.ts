@@ -4,6 +4,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiFetch } from "@/lib/api";
 import { Job } from "@/lib/types";
 
+type CreateJobPayload = Omit<Job, "_id" | "createdAt">;
+
 interface JobsState {
   items: Job[];
   loading: boolean;
@@ -20,7 +22,7 @@ export const fetchJobs = createAsyncThunk("jobs/fetchAll", async () => apiFetch<
 
 export const fetchRecruiterJobs = createAsyncThunk("jobs/fetchMine", async () => apiFetch<Job[]>("/jobs/mine"));
 
-export const createJob = createAsyncThunk("jobs/create", async (payload: Omit<Job, "_id" | "createdAt">) =>
+export const createJob = createAsyncThunk("jobs/create", async (payload: CreateJobPayload) =>
   apiFetch<Job>("/jobs", {
     method: "POST",
     body: JSON.stringify(payload)

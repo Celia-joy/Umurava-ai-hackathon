@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import path from "path";
+import { env } from "./config/env";
 import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware";
 import aiRoutes from "./routes/aiRoutes";
 import applicationRoutes from "./routes/applicationRoutes";
@@ -11,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: true,
+    origin: env.corsOrigin ? env.corsOrigin.split(",").map((item) => item.trim()) : true,
     credentials: true
   })
 );

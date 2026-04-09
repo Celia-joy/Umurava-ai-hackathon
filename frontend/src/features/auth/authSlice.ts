@@ -2,7 +2,7 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiFetch } from "@/lib/api";
-import { User } from "@/lib/types";
+import { TalentProfile, User } from "@/lib/types";
 
 interface AuthState {
   user: User | null;
@@ -33,7 +33,7 @@ export const registerUser = createAsyncThunk(
     email: string;
     password: string;
     role: "recruiter" | "applicant";
-    profile?: Record<string, unknown>;
+    profile?: TalentProfile;
   }) =>
     apiFetch<{ token: string; user: User }>("/auth/register", {
       method: "POST",

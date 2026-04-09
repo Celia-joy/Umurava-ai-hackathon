@@ -2,7 +2,7 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiFetch } from "@/lib/api";
-import { Application, User } from "@/lib/types";
+import { Application, TalentProfile, User } from "@/lib/types";
 
 interface ApplicationsState {
   items: Application[];
@@ -30,7 +30,7 @@ export const fetchApplicantsForJob = createAsyncThunk("applications/fetchForJob"
 
 export const updateApplicantProfile = createAsyncThunk(
   "applications/updateProfile",
-  async (payload: { name: string; skills: string[]; experience: string; education: string }) =>
+  async (payload: TalentProfile) =>
     apiFetch<User>("/applications/profile", {
       method: "PUT",
       body: JSON.stringify(payload)
@@ -39,10 +39,13 @@ export const updateApplicantProfile = createAsyncThunk(
 
 export const applyToJob = createAsyncThunk(
   "applications/apply",
-  async (payload: { jobId: string; file: File }) => {
+  async (payload: { jobId: string; file: File | null; talentProfile: TalentProfile }) => {
     const formData = new FormData();
     formData.append("jobId", payload.jobId);
-    formData.append("cv", payload.file);
+    formData.append("talentProfile", JSON.stringify(payload.talentProfile));
+    if (payload.file) {
+      formData.append("cv", payload.file);
+    }
     return apiFetch<Application>("/applications", {
       method: "POST",
       body: formData
@@ -67,6 +70,9 @@ const applicationsSlice = createSlice({
       .addCase(updateApplicantProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user", JSON.stringify(action.payload));
+        }
       })
       .addCase(applyToJob.fulfilled, (state, action) => {
         state.loading = false;

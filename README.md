@@ -1,65 +1,128 @@
 # Umurava RecruitAI
 
-Umurava RecruitAI is a production-oriented recruitment screening platform with a Next.js frontend, Express API, MongoDB persistence, and Gemini-powered candidate analysis. Recruiters can publish structured jobs, review applicants, trigger one-request AI screening, and inspect explainable shortlist decisions. Applicants can maintain profiles, upload PDF CVs, and apply to roles through a clean dashboard experience.
+Production-ready AI recruitment platform for the Umurava AI Hackathon. The system upgrades the existing repo into a recruiter-facing workflow that combines the official talent profile schema, CV parsing, deterministic scoring, Gemini reasoning, fairness messaging, and a polished light-blue dashboard experience.
 
-## Project Structure
+## Project Overview
+
+- Recruiters create jobs with structured hiring signals: required skills, project keywords, certifications, education, experience, availability, eligibility, and job type.
+- Applicants submit the official talent profile schema plus optional CV uploads for hybrid structured + unstructured ingestion.
+- The backend normalizes talent data, parses PDFs, computes deterministic scores, and sends all candidates for a role to Gemini in one comparison request.
+- Recruiters get ranked candidates, score breakdowns, missing-skill analysis, side-by-side comparisons, fairness notes, and pool-level insights.
+
+## Architecture Diagram
 
 ```text
-/frontend   Next.js App Router + TypeScript + Tailwind + Redux Toolkit
-/backend    Express + TypeScript + MongoDB + Gemini integration
-/docs       Architecture and AI-flow documentation
-README.md
+┌──────────────────────────────┐
+│         Next.js UI           │
+│------------------------------│
+│ Recruiter dashboard          │
+│ Applicant dashboard          │
+│ Job board + application flow │
+│ AI results + comparisons     │
+└──────────────┬───────────────┘
+               │ REST / JSON / multipart
+┌──────────────▼───────────────┐
+│         Express API          │
+│------------------------------│
+│ /auth                        │
+│ /jobs                        │
+│ /applications                │
+│ /ai/analyze                  │
+│ Zod validation               │
+│ Multer upload security       │
+│ PDF parsing + normalization  │
+└───────┬───────────────┬──────┘
+        │               │
+┌───────▼───────┐ ┌─────▼─────────────┐
+│ MongoDB Atlas │ │ Gemini API        │
+│---------------│ │-------------------│
+│ Users         │ │ Multi-candidate   │
+│ Jobs          │ │ ranking           │
+│ Applications  │ │ strengths/gaps    │
+│ Results       │ │ comparison insight│
+└───────────────┘ └───────────────────┘
 ```
 
-## Architecture
+## Official Talent Profile Schema
 
-- Frontend:
-  - Next.js App Router for landing, auth, dashboards, jobs, applications, and results pages
-  - Redux Toolkit for auth, jobs, applications, and AI screening state
-  - Tailwind CSS for the light blue and white Umurava-inspired UI system
-- Backend:
-  - Express REST API with route groups for `/auth`, `/jobs`, `/applications`, and `/ai`
-  - JWT authentication with recruiter and applicant role-based access control
-  - Multer-based PDF uploads and `pdf-parse` CV extraction
-  - Gemini analysis pipeline that evaluates all applicants for a job in one request
-- Database:
-  - MongoDB Atlas or local MongoDB through Mongoose models for users, jobs, applications, and screening results
+The applicant profile and application snapshot now use the same structure end to end:
 
-## Features
-
-- Recruiter features:
-  - Register and login with JWT
-  - Create detailed jobs with structured hiring criteria
-  - View applicants per job
-  - Trigger AI analysis for all candidates at once
-  - Review ranked shortlist results with strengths, gaps, recommendations, and comparison notes
-- Applicant features:
-  - Register and login
-  - Create and update profile details
-  - Upload PDF CVs
-  - Apply to jobs
-  - Track application status and weighted screening score
+```ts
+{
+  basicInfo: {
+    firstName,
+    lastName,
+    email,
+    headline,
+    bio,
+    location
+  },
+  skills: [{ name, level, yearsOfExperience }],
+  languages: [{ name, proficiency }],
+  experience: [{ company, role, startDate, endDate, description, technologies, isCurrent }],
+  education: [{ institution, degree, fieldOfStudy, startYear, endYear }],
+  certifications: [{ name, issuer, issueDate, expirationDate, credentialId }],
+  projects: [{ name, description, technologies, role, url }],
+  availability: { status, startDate, notes },
+  socialLinks: [{ platform, url }]
+}
+```
 
 ## AI Decision Flow
 
-1. Recruiter selects a job and clicks `Analyze Candidates`.
-2. Backend fetches the job and all related applications in one batch.
-3. Candidate profiles and parsed CV text are converted into a weighted baseline score:
-   - Skills: 40%
-   - Experience: 30%
-   - Education: 20%
-   - Relevance: 10%
-4. Backend sends one Gemini request containing:
-   - Structured job data
-   - Every candidate payload
-   - Computed weighted scores
-   - Instructions to return strict JSON only
-5. Gemini returns ranked candidates with score, strengths, gaps, and recommendations.
-6. Backend enriches results with:
-   - `Why Candidate A > Candidate B`
-   - Skill gap suggestions
-   - Highlighted top skills
-7. Results are stored in MongoDB and rendered on the recruiter results page.
+1. Recruiter creates a job with role requirements.
+2. Applicant submits structured profile data and optionally uploads a PDF/CSV CV.
+3. Backend parses the CV, converts it into the talent profile structure, and normalizes labels like `Nodejs` to `Node.js`.
+4. The deterministic scoring engine computes:
+   - Skills match: 40%
+   - Experience: 25%
+   - Projects: 15%
+   - Education: 10%
+   - Certifications: 5%
+   - Availability: 5%
+5. Backend sends Gemini:
+   - job requirements
+   - all structured talent profiles
+   - precomputed scores
+6. Gemini returns strict JSON with:
+   - rank
+   - score
+   - strengths
+   - gaps
+   - recommendation
+   - comparison insight
+7. Backend enriches and stores:
+   - matched skills
+   - missing skills
+   - component scores
+   - fairness messaging
+   - skill gap suggestions
+   - pool-wide recruiter insights
+
+## Key Features
+
+- Official talent profile schema stored in MongoDB and validated with Zod.
+- Hybrid ingestion flow for forms plus PDF/CSV upload parsing.
+- Multi-candidate Gemini analysis with strict JSON output.
+- Explainable ranking with deterministic baseline plus AI comparison reasoning.
+- Recruiter dashboard with score bars, fairness layer, skills distribution, and candidate comparison panel.
+- Skill gap analysis for every ranked candidate.
+
+## API Routes
+
+- `POST /auth/register`
+- `POST /auth/login`
+- `PUT /auth/profile`
+- `GET /jobs`
+- `GET /jobs/mine`
+- `GET /jobs/:jobId`
+- `POST /jobs`
+- `GET /applications/me`
+- `GET /applications/job/:jobId`
+- `PUT /applications/profile`
+- `POST /applications`
+- `POST /ai/analyze`
+- `GET /ai/results/:jobId`
 
 ## Environment Variables
 
@@ -67,64 +130,64 @@ Create a root `.env` file:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key
-MONGODB_URI=your_mongodb_connection_string
+MONGODB_URI=your_mongodb_atlas_uri
 JWT_SECRET=your_jwt_secret
-BACKEND_URL=http://localhost:5000
+CORS_ORIGIN=http://localhost:3000
 NEXT_PUBLIC_API_URL=/api/proxy
 ```
 
-Note: the backend also accepts `MONGO_URI` for compatibility with the current local env file.
+Optional:
 
-## Local Setup
+```env
+MONGO_URI=legacy_alias_for_mongodb_uri
+BACKEND_URL=http://localhost:5000
+FRONTEND_URL=http://localhost:3000
+```
 
-1. Install backend dependencies:
-   - `cd backend`
-   - `npm install`
-2. Install frontend dependencies:
-   - `cd ../frontend`
-   - `npm install`
-3. Run backend:
-   - `npm run dev`
-4. Run frontend in another terminal:
-   - `cd frontend`
-   - `npm run dev`
-5. Open `http://localhost:3000`
+## Setup Instructions
 
-## Deployment
+1. Install backend dependencies.
+   `cd backend && npm install`
+2. Install frontend dependencies.
+   `cd frontend && npm install`
+3. Start the backend.
+   `cd backend && npm run dev`
+4. Start the frontend.
+   `cd frontend && npm run dev`
+5. Open `http://localhost:3000`.
 
-- Frontend:
-  - Deploy `frontend` to Vercel
-  - Set `NEXT_PUBLIC_API_URL` to the deployed backend URL
-- Backend:
-  - Deploy `backend` to Render using the included [`render.yaml`](/home/bolice/Projects/UmuravaAI/backend/render.yaml)
-  - Set `GEMINI_API_KEY`, `MONGODB_URI`, and `JWT_SECRET`
-- Database:
-  - Use MongoDB Atlas for production
+## Deployment Validation
+
+- Frontend is configured for Vercel in [frontend/vercel.json](/home/bolice/Projects/UmuravaAI/frontend/vercel.json).
+- Backend includes Render config in [backend/render.yaml](/home/bolice/Projects/UmuravaAI/backend/render.yaml).
+- MongoDB Atlas is the intended production database target through `MONGODB_URI`.
+- Live deployment was not executed from this environment, but local production builds for both frontend and backend passed successfully.
+
+## Testing Flow
+
+Recommended demo script:
+
+1. Recruiter registers and creates a job.
+2. Applicant registers and completes the structured talent profile.
+3. Applicant applies with profile data and optional CV upload.
+4. Recruiter opens the dashboard and runs `/ai/analyze`.
+5. Results page shows ranked shortlist, skill gaps, fairness notes, and candidate comparisons.
+
+Verification completed in this repo:
+
+- `cd backend && npm run lint`
+- `cd backend && npm run build`
+- `cd frontend && npm run build`
 
 ## Assumptions And Limitations
 
-- CV uploads are limited to PDF files up to 5MB.
-- Gemini output is expected to follow strict JSON; malformed model responses should be retried or validated more defensively in future hardening.
-- Weighted scores are heuristic and intended as a baseline for explainable AI, not a substitute for human hiring decisions.
-- The current implementation stores uploads locally; production systems may prefer object storage such as S3 or Cloudinary.
-- The frontend is wired for direct REST communication and assumes a reachable backend URL.
+- PDF extraction is heuristic and works best when the CV has a readable text layer.
+- CSV support remains available for structured imports, though the primary CV path is PDF.
+- Fairness language reduces bias risk by constraining analysis to job-related evidence, but it is not a formal bias audit.
+- Uploaded files are stored locally in `backend/uploads`; production should move this to object storage.
+- Live Vercel/Render/Atlas deployment was not triggered from this workspace.
 
-## API Overview
+## Supporting Docs
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `PUT /auth/profile`
-- `GET /jobs`
-- `GET /jobs/mine`
-- `POST /jobs`
-- `POST /applications`
-- `GET /applications/me`
-- `GET /applications/job/:jobId`
-- `PUT /applications/profile`
-- `POST /ai/analyze`
-- `GET /ai/results/:jobId`
-
-## Documentation
-
-- Architecture notes: [`docs/architecture.md`](/home/bolice/Projects/UmuravaAI/docs/architecture.md)
-- AI prompt and flow details: [`docs/ai-screening-flow.md`](/home/bolice/Projects/UmuravaAI/docs/ai-screening-flow.md)
+- [Architecture Notes](/home/bolice/Projects/UmuravaAI/docs/architecture.md)
+- [AI Screening Flow](/home/bolice/Projects/UmuravaAI/docs/ai-screening-flow.md)

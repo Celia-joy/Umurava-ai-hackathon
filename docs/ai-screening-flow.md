@@ -2,39 +2,60 @@
 
 ## Prompt Strategy
 
-The backend builds a single Gemini request per analysis event with:
+The backend sends one Gemini request per job analysis containing:
 
-- The complete job description and structured requirements
-- Every candidate profile for the job
-- Parsed CV text
-- A weighted baseline score for each candidate
+- structured job requirements
+- every candidate talent profile as structured JSON
+- deterministic weighted scores and matched/missing skills
 
-## Weighted Baseline
+## Deterministic Scoring
 
-- Skills: 40%
-- Experience: 30%
-- Education: 20%
-- Relevance: 10%
+- Skills match: 40%
+- Experience: 25%
+- Projects: 15%
+- Education: 10%
+- Certifications: 5%
+- Availability: 5%
 
-This baseline does not replace model reasoning. It gives Gemini a consistent quantitative anchor before it compares candidates against one another.
+This baseline is the fairness anchor. Gemini can adjust slightly, but the scoring model is made explicit in the prompt.
 
-## Gemini Request Contract
+## Gemini Contract
 
-The prompt asks Gemini to:
+Gemini receives the following instruction set:
 
-- Evaluate all candidates
-- Score each candidate from 0 to 100
-- Rank all candidates
-- Select the top N candidates
-- Return strict JSON only
+- evaluate all candidates fairly and consistently
+- compare candidates against each other
+- respect the weighted scoring provided
+- adjust scores slightly if justified
+- rank candidates best to worst
+- return strict JSON only
+
+Each candidate response includes:
+
+- `rank`
+- `score`
+- `strengths`
+- `gaps`
+- `recommendation`
+- `comparisonInsight`
 
 ## Explainability Layer
 
-After Gemini responds, the backend enriches each shortlisted candidate with:
+After Gemini responds, the backend enriches each candidate with:
 
-- `whyBetterThanNext`
+- `matchedSkills`
+- `missingSkills`
 - `skillGapSuggestions`
-- `topSkills`
-- `weightedScore`
+- `componentScores`
+- `fairnessNotes`
+- `whyBetterThanNext`
 
-These fields are used by the frontend to explain shortlist decisions more clearly to recruiters.
+## Recruiter Insights
+
+The stored screening result also includes:
+
+- applicant count
+- shortlisted count
+- average AI score
+- average weighted score
+- top skills distribution

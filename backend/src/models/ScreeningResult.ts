@@ -4,6 +4,7 @@ export interface IRankedCandidate {
   applicationId: string;
   applicantId: string;
   name: string;
+  headline: string;
   rank: number;
   score: number;
   matchedSkills: string[];
@@ -13,11 +14,20 @@ export interface IRankedCandidate {
   recommendation: string;
   whySelected: string;
   whyNotSelected: string;
+  comparisonInsight: string;
   whyBetterThanNext?: string;
   fairnessNotes: string;
   skillGapSuggestions: string[];
   topSkills: string[];
   weightedScore: number;
+  componentScores: {
+    skillsMatch: number;
+    experience: number;
+    projects: number;
+    education: number;
+    certifications: number;
+    availability: number;
+  };
 }
 
 export interface IInsightsSummary {
@@ -26,6 +36,10 @@ export interface IInsightsSummary {
   averageScore: number;
   averageWeightedScore: number;
   mostRequestedSkills: string[];
+  topSkillsDistribution: Array<{
+    skill: string;
+    count: number;
+  }>;
 }
 
 export interface IScreeningResult extends Document {
@@ -43,6 +57,7 @@ const rankedCandidateSchema = new Schema<IRankedCandidate>(
     applicationId: { type: String, required: true },
     applicantId: { type: String, required: true },
     name: { type: String, required: true },
+    headline: { type: String, default: "" },
     rank: { type: Number, required: true },
     score: { type: Number, required: true },
     matchedSkills: { type: [String], default: [] },
@@ -52,11 +67,26 @@ const rankedCandidateSchema = new Schema<IRankedCandidate>(
     recommendation: { type: String, default: "" },
     whySelected: { type: String, default: "" },
     whyNotSelected: { type: String, default: "" },
+    comparisonInsight: { type: String, default: "" },
     whyBetterThanNext: { type: String, default: "" },
     fairnessNotes: { type: String, default: "" },
     skillGapSuggestions: { type: [String], default: [] },
     topSkills: { type: [String], default: [] },
-    weightedScore: { type: Number, required: true }
+    weightedScore: { type: Number, required: true },
+    componentScores: {
+      type: new Schema(
+        {
+          skillsMatch: { type: Number, default: 0 },
+          experience: { type: Number, default: 0 },
+          projects: { type: Number, default: 0 },
+          education: { type: Number, default: 0 },
+          certifications: { type: Number, default: 0 },
+          availability: { type: Number, default: 0 }
+        },
+        { _id: false }
+      ),
+      default: () => ({})
+    }
   },
   { _id: false }
 );
@@ -67,7 +97,19 @@ const insightsSchema = new Schema<IInsightsSummary>(
     shortlistedCount: { type: Number, default: 0 },
     averageScore: { type: Number, default: 0 },
     averageWeightedScore: { type: Number, default: 0 },
-    mostRequestedSkills: { type: [String], default: [] }
+    mostRequestedSkills: { type: [String], default: [] },
+    topSkillsDistribution: {
+      type: [
+        new Schema(
+          {
+            skill: { type: String, default: "" },
+            count: { type: Number, default: 0 }
+          },
+          { _id: false }
+        )
+      ],
+      default: []
+    }
   },
   { _id: false }
 );

@@ -5,6 +5,9 @@ export interface IJob extends Document {
   title: string;
   description: string;
   requiredSkills: string[];
+  preferredCertifications: string[];
+  projectKeywords: string[];
+  availabilityRequirement: string;
   experienceLevel: string;
   education: string;
   eligibility: string;
@@ -17,6 +20,9 @@ const jobSchema = new Schema<IJob>(
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
     requiredSkills: { type: [String], default: [] },
+    preferredCertifications: { type: [String], default: [] },
+    projectKeywords: { type: [String], default: [] },
+    availabilityRequirement: { type: String, default: "" },
     experienceLevel: { type: String, required: true },
     education: { type: String, required: true },
     eligibility: { type: String, required: true },
