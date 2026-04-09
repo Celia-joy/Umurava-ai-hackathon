@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../types/express";
 import { Job } from "../models/Job";
+import { AppError } from "../utils/errors";
 
 export const createJob = async (req: AuthenticatedRequest, res: Response) => {
   const recruiterId = req.user?.id;
@@ -25,7 +26,7 @@ export const getRecruiterJobs = async (req: AuthenticatedRequest, res: Response)
 export const getJobById = async (req: AuthenticatedRequest, res: Response) => {
   const job = await Job.findById(req.params.jobId);
   if (!job) {
-    return res.status(404).json({ message: "Job not found" });
+    throw new AppError("Job not found", 404);
   }
 
   return res.json(job);

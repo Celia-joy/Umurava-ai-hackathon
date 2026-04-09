@@ -1,6 +1,7 @@
 import fs from "fs";
 import multer from "multer";
 import path from "path";
+import { AppError } from "../utils/errors";
 
 const uploadDir = path.join(process.cwd(), "uploads");
 
@@ -19,8 +20,15 @@ const storage = multer.diskStorage({
 export const upload = multer({
   storage,
   fileFilter: (_req, file, cb) => {
-    if (file.mimetype !== "application/pdf") {
-      cb(new Error("Only PDF CV uploads are supported"));
+    const allowedMimeTypes = [
+      "application/pdf",
+      "text/csv",
+      "application/vnd.ms-excel"
+    ];
+    const extension = path.extname(file.originalname).toLowerCase();
+
+    if (!allowedMimeTypes.includes(file.mimetype) && extension !== ".csv" && extension !== ".pdf") {
+      cb(new AppError("Only PDF and CSV CV uploads are supported", 400));
       return;
     }
 

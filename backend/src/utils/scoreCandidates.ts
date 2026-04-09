@@ -10,6 +10,7 @@ export interface CandidatePayload {
   skills: string[];
   experience: string;
   education: string;
+  summary: string;
   cvText: string;
   computed: {
     weightedScore: number;
@@ -64,16 +65,23 @@ export const buildCandidatePayload = (
 ): CandidatePayload[] => {
   return applications.map((application) => {
     const profile = application.applicant.profile;
-    const skills = profile?.skills || [];
-    const experience = profile?.experience || "";
-    const education = profile?.education || "";
+    const extractedData = application.extractedData || {
+      skills: [],
+      experience: "",
+      education: "",
+      summary: ""
+    };
+    const skills = Array.from(new Set([...(profile?.skills || []), ...extractedData.skills]));
+    const experience = [profile?.experience, extractedData.experience].filter(Boolean).join(" | ");
+    const education = [profile?.education, extractedData.education].filter(Boolean).join(" | ");
+    const summary = [extractedData.summary, application.cvText].filter(Boolean).join(" | ");
 
     const skillScore = scoreOverlap(job.requiredSkills, skills);
     const experienceScore = scoreTextSimilarity(job.experienceLevel, `${experience} ${application.cvText}`);
     const educationScore = scoreTextSimilarity(job.education, `${education} ${application.cvText}`);
     const relevanceScore = scoreTextSimilarity(
       `${job.title} ${job.description} ${job.eligibility}`,
-      `${skills.join(" ")} ${experience} ${education} ${application.cvText}`
+      `${skills.join(" ")} ${experience} ${education} ${summary}`
     );
     const weightedScore = Math.round(
       skillScore * 0.4 + experienceScore * 0.3 + educationScore * 0.2 + relevanceScore * 0.1
@@ -87,6 +95,7 @@ export const buildCandidatePayload = (
       skills,
       experience,
       education,
+      summary,
       cvText: application.cvText,
       computed: {
         weightedScore,

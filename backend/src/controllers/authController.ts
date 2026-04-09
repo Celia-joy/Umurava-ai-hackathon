@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import { AuthenticatedRequest } from "../types/express";
+import { AppError } from "../utils/errors";
 import { signToken } from "../utils/jwt";
 
 export const register = async (req: Request, res: Response) => {
@@ -9,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(409).json({ message: "User already exists" });
+    throw new AppError("User already exists", 409);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -22,7 +23,7 @@ export const register = async (req: Request, res: Response) => {
 
   return res.status(201).json({
     token: signToken(user),
-    user
+    user: await User.findById(user._id).select("-password")
   });
 };
 
@@ -31,17 +32,17 @@ export const login = async (req: Request, res: Response) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    throw new AppError("Invalid credentials", 401);
   }
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    throw new AppError("Invalid credentials", 401);
   }
 
   return res.json({
     token: signToken(user),
-    user
+    user: await User.findById(user._id).select("-password")
   });
 };
 
