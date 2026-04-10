@@ -5,6 +5,8 @@ import { AuthenticatedRequest } from "../types/express";
 import { normalizeTalentProfile } from "../utils/normalizeCandidateData";
 import { AppError } from "../utils/errors";
 import { signToken } from "../utils/jwt";
+import * as emailService from "../services/emailService";
+
 
 export const register = async (req: Request, res: Response) => {
   const { email, password, role, profile } = req.body;
@@ -21,11 +23,14 @@ export const register = async (req: Request, res: Response) => {
     role,
     profile: profile ? normalizeTalentProfile(profile) : undefined
   });
-
+ // let us send a welcome email to the user after registration
+  await emailService.sendRegistrationEmail(email, profile?.name || "User");
+  
   return res.status(201).json({
     token: signToken(user),
     user: await User.findById(user._id).select("-password")
   });
+  
 };
 
 export const login = async (req: Request, res: Response) => {

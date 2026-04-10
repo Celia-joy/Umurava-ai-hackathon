@@ -1,15 +1,28 @@
 import nodemailer from "nodemailer";
 import { env } from "../config/env";
 
-const transporter = nodemailer.createTransport({
-  host: env.EMAIL_HOST,
-  port: Number(env.EMAIL_PORT) || 587,
-  secure: env.EMAIL_SECURE === "true",
+const transportOptions: any = {
   auth: {
     user: env.EMAIL_USER,
     pass: env.EMAIL_PASS,
   },
-});
+};
+
+if (env.EMAIL_SERVICE) {
+  if (env.EMAIL_SERVICE.includes(".")) {
+    transportOptions.host = env.EMAIL_SERVICE;
+    transportOptions.port = Number(env.EMAIL_PORT) || 587;
+    transportOptions.secure = env.EMAIL_SECURE === "true";
+  } else {
+    transportOptions.service = env.EMAIL_SERVICE;
+  }
+} else if (env.EMAIL_HOST) {
+  transportOptions.host = env.EMAIL_HOST;
+  transportOptions.port = Number(env.EMAIL_PORT) || 587;
+  transportOptions.secure = env.EMAIL_SECURE === "true";
+}
+
+const transporter = nodemailer.createTransport(transportOptions);
 
 const brand = {
   background: "#eef8ff",

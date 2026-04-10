@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, mongo, Schema } from "mongoose";
 import { createEmptyTalentProfile, ITalentProfile, talentProfileSchema } from "./talentProfile";
 import { UserRole } from "../types/express";
 
@@ -18,5 +18,6 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+ 
 
 export const User = mongoose.model<IUser>("User", userSchema);
