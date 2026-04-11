@@ -1,6 +1,25 @@
 # Umurava RecruitAI
 
-Production-ready AI recruitment platform for the Umurava AI Hackathon. The system upgrades the existing repo into a recruiter-facing workflow that combines the official talent profile schema, CV parsing, deterministic scoring, Gemini reasoning, fairness messaging, and a polished light-blue dashboard experience.
+Production-ready AI recruitment platform for the Umurava AI Hackathon. The system has a recruiter-facing workflow that combines the official talent profile schema, CV parsing, deterministic scoring, Gemini reasoning, fairness messaging, and a polished light-blue dashboard experience.
+## project live links 
+
+1. Backend hosted on render 
+```text
+https://umuravaai-backend.onrender.com
+
+```
+2. Frontend hosted on vercel
+```text 
+https://umurava-ai-frontend.vercel.app
+
+```
+3. pdf and csv cv uploads are stored on 
+
+```bash
+cloudinary 
+
+```
+
 
 ## Project Overview
 
@@ -28,7 +47,8 @@ Production-ready AI recruitment platform for the Umurava AI Hackathon. The syste
 │ /jobs                        │
 │ /applications                │
 │ /ai/analyze                  │
-│ Zod validation               │
+│ Zod validation               |
+| Nodemailer email sending     │
 │ Multer upload security       │
 │ PDF parsing + normalization  │
 └───────┬───────────────┬──────┘
@@ -45,7 +65,7 @@ Production-ready AI recruitment platform for the Umurava AI Hackathon. The syste
 
 ## Official Talent Profile Schema
 
-The applicant profile and application snapshot now use the same structure end to end:
+The applicant profile and application snapshot use the same structure end to end:
 
 ```ts
 {
@@ -158,10 +178,10 @@ FRONTEND_URL=http://localhost:3000
 
 ## Deployment Validation
 
-- Frontend is configured for Vercel in [frontend/vercel.json](/home/bolice/Projects/UmuravaAI/frontend/vercel.json).
-- Backend includes Render config in [backend/render.yaml](/home/bolice/Projects/UmuravaAI/backend/render.yaml).
+- Frontend is configured for Vercel in [frontend/vercel.json](/UmuravaAI/frontend/vercel.json).
+- Backend includes Render config in [backend/render.yaml](/UmuravaAI/backend/render.yaml).
 - MongoDB Atlas is the intended production database target through `MONGODB_URI`.
-- Live deployment was not executed from this environment, but local production builds for both frontend and backend passed successfully.
+- currently both the backend and frontend are deployed live on vercel and render, our database is on mongo atlas 
 
 ## Testing Flow
 
@@ -184,10 +204,9 @@ Verification completed in this repo:
 - PDF extraction is heuristic and works best when the CV has a readable text layer.
 - CSV support remains available for structured imports, though the primary CV path is PDF.
 - Fairness language reduces bias risk by constraining analysis to job-related evidence, but it is not a formal bias audit.
-- Uploaded files are stored locally in `backend/uploads`; production should move this to object storage.
-- Live Vercel/Render/Atlas deployment was not triggered from this workspace.
-
+- Uploaded files are stored in `backend/uploads`; production should move this to object storage.( planning to place them on cloudinary)
+- Live Vercel/Render/Atlas/cloudinary
 ## Supporting Docs
 
-- [Architecture Notes](/home/bolice/Projects/UmuravaAI/docs/architecture.md)
-- [AI Screening Flow](/home/bolice/Projects/UmuravaAI/docs/ai-screening-flow.md)
+- [Architecture Notes](/UmuravaAI/docs/architecture.md)
+- [AI Screening Flow](/UmuravaAI/docs/ai-screening-flow.md)

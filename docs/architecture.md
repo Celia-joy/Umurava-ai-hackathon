@@ -13,8 +13,9 @@ The platform is a two-tier deployment:
   - MongoDB + Mongoose
   - Zod validation
   - Multer upload handling
-  - PDF/CSV ingestion
+  - PDF/CSV ingestion 
   - Gemini ranking service
+  - Nodemailer for sending emails to applicants on updates
 
 ## Core Backend Domains
 
