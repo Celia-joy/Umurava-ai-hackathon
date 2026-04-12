@@ -13,12 +13,6 @@ https://umuravaai-backend.onrender.com
 https://umurava-ai-frontend.vercel.app
 
 ```
-3. pdf and csv cv uploads are stored on 
-
-```bash
-cloudinary 
-
-```
 
 
 ## Project Overview
