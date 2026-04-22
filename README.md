@@ -170,6 +170,37 @@ FRONTEND_URL=http://localhost:3000
    `cd frontend && npm run dev`
 5. Open `http://localhost:3000`.
 
+## Docker Production Setup
+
+This repository now includes production Docker artifacts:
+
+- `backend/Dockerfile` (multi-stage build)
+- `frontend/Dockerfile` (Next.js standalone runtime)
+- `docker-compose.yml` (frontend + backend + mongo)
+- `.env.docker.example` (container env template)
+
+### Run With Docker Compose
+
+1. Create runtime env file:
+   `cp .env.docker.example .env.docker`
+2. Update `.env.docker` with your real keys (`GEMINI_API_KEY`, `JWT_SECRET`, optional email vars).
+3. Build and run:
+   `docker compose up --build -d`
+4. Open:
+   `http://localhost:3000`
+
+### Docker Services
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
+- MongoDB: `mongodb://localhost:27017/umuravaai`
+
+### Notes
+
+- Backend now accepts both `MONGO_URI` and `MONGODB_URI`.
+- Uploaded files are stored in Docker volume `backend_uploads`.
+- Database data is stored in Docker volume `mongo_data`.
+
 ## Deployment Validation
 
 - Frontend is configured for Vercel in [frontend/vercel.json](/UmuravaAI/frontend/vercel.json).

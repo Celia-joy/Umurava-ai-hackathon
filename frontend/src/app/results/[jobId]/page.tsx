@@ -39,7 +39,7 @@ export default function ResultsPage() {
       <SectionHeading
         eyebrow="Recruiter Insights"
         title="AI shortlist results"
-        subtitle="Review ranked candidates, skill gap analysis, fairness notes, and side-by-side comparisons generated from the hybrid scoring pipeline."
+        subtitle="Review ranked candidates, fairness notes, and side-by-side comparisons powered by the hybrid scoring pipeline."
       />
       {loading && <p className="mb-4 text-sm text-slate-500">Loading shortlist and AI reasoning...</p>}
       {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
@@ -54,7 +54,7 @@ export default function ResultsPage() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-            <Card className="p-6">
+            <Card className="anim-fade-up p-6">
               <SectionHeading
                 title="Fairness Layer"
                 subtitle={`Model used: ${result.aiModel}. Ranking explanations are anchored to job-related evidence only.`}
@@ -67,10 +67,10 @@ export default function ResultsPage() {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="anim-fade-up anim-delay-1 p-6">
               <SectionHeading
                 title="Top Skills Distribution"
-                subtitle="Recruiter dashboard insight showing which skills dominate the incoming talent pool."
+                subtitle="See which skills appear most frequently in this applicant pool."
               />
               <div className="space-y-3">
                 {result.insights.topSkillsDistribution.map((item) => (
@@ -83,17 +83,17 @@ export default function ResultsPage() {
           </div>
 
           {comparisonCandidates.length === 2 && (
-            <Card className="p-6">
+            <Card className="anim-fade-up anim-delay-1 p-6">
               <SectionHeading
                 title="Candidate Comparison Panel"
-                subtitle="Side-by-side comparison to explain why one candidate edges another."
+                subtitle="Explain why one candidate edges another using structured and AI scoring signals."
               />
               <div className="grid gap-4 lg:grid-cols-2">
                 {comparisonCandidates.map((candidate) => (
-                  <div key={candidate.applicationId} className="rounded-[28px] border border-sky-100 bg-white p-5">
+                  <div key={candidate.applicationId} className="rounded-[24px] border border-brand-100 bg-white p-5">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="text-lg font-semibold text-slate-900">{candidate.name}</p>
+                        <p className="text-lg font-bold text-slate-900">{candidate.name}</p>
                         <p className="text-sm text-slate-500">{candidate.headline || "No headline provided"}</p>
                       </div>
                       <Pill tone={candidate.rank === 1 ? "success" : "brand"}>Rank #{candidate.rank}</Pill>
@@ -119,7 +119,7 @@ export default function ResultsPage() {
 
       <div className="grid gap-5">
         {result?.rankedCandidates.map((candidate) => (
-          <Card key={candidate.applicationId} className="p-6">
+          <Card key={candidate.applicationId} className="anim-fade-up p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <div className="flex flex-wrap items-center gap-3">
@@ -127,14 +127,14 @@ export default function ResultsPage() {
                   <Pill tone={candidate.rank <= result.topCount ? "success" : "neutral"}>
                     {candidate.rank <= result.topCount ? "Shortlisted" : "Reviewed"}
                   </Pill>
-                  <h3 className="text-xl font-semibold text-slate-900">{candidate.name}</h3>
+                  <h3 className="text-xl font-bold text-slate-900">{candidate.name}</h3>
                 </div>
                 <p className="mt-2 text-sm text-slate-500">{candidate.headline || "No headline provided"}</p>
                 <p className="mt-3 text-sm text-slate-600">{candidate.recommendation}</p>
               </div>
               <div className="rounded-3xl bg-brand-50 px-5 py-4 text-center">
                 <p className="text-xs uppercase tracking-[0.2em] text-brand-700">AI Score</p>
-                <p className="text-3xl font-semibold text-brand-800">{candidate.score}</p>
+                <p className="text-3xl font-bold text-brand-900">{candidate.score}</p>
                 <p className="mt-1 text-xs text-slate-500">Weighted baseline {candidate.weightedScore}</p>
               </div>
             </div>
@@ -187,21 +187,21 @@ export default function ResultsPage() {
                   <ScoreBar value={candidate.componentScores.availability} label="Availability" tone="neutral" />
                 </div>
               </div>
-              <div className="rounded-2xl bg-slate-950 px-5 py-4 text-sm text-slate-100">
+              <div className="rounded-2xl bg-slate-900 px-5 py-4 text-sm text-slate-100">
                 Why Candidate A &gt; Candidate B: {candidate.whyBetterThanNext}
               </div>
             </div>
 
             <div className="mt-5">
               <button
-                className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700"
+                className="rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700"
                 onClick={() => setExpandedCandidateId((current) => current === candidate.applicationId ? null : candidate.applicationId)}
               >
                 {expandedCandidateId === candidate.applicationId ? "Hide AI reasoning" : "Show AI reasoning"}
               </button>
               {expandedCandidateId === candidate.applicationId && (
                 <div className="mt-4 grid gap-4 lg:grid-cols-3">
-                  <div className="rounded-2xl bg-sky-50 p-4 text-sm text-slate-700">
+                  <div className="rounded-2xl bg-brand-50 p-4 text-sm text-slate-700">
                     <p className="font-semibold text-slate-900">Why selected</p>
                     <p className="mt-2">{candidate.whySelected}</p>
                   </div>

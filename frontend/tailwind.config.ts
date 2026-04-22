@@ -6,23 +6,23 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#f0f9ff",
-          100: "#dff2ff",
-          200: "#b5e3ff",
-          300: "#7dceff",
-          400: "#3db4ff",
-          500: "#1298f0",
-          600: "#0c79c8",
-          700: "#0e609f",
-          800: "#124f83",
-          900: "#15436d"
+          50: "#f2f8ff",
+          100: "#e4f1ff",
+          200: "#c6e2ff",
+          300: "#9cd0ff",
+          400: "#69b8ff",
+          500: "#339dff",
+          600: "#1f83e6",
+          700: "#1a68b8",
+          800: "#184f8c",
+          900: "#153f6f"
         }
       },
       boxShadow: {
-        panel: "0 20px 50px rgba(18, 152, 240, 0.12)"
+        panel: "0 18px 46px rgba(15, 23, 42, 0.08)"
       },
       backgroundImage: {
-        hero: "radial-gradient(circle at top left, rgba(61,180,255,0.22), transparent 40%), linear-gradient(135deg, #f8fdff, #eaf6ff)"
+        hero: "linear-gradient(135deg, #ffffff, #f2f8ff)"
       }
     }
   },

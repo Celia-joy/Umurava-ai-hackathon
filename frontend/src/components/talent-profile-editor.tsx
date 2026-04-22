@@ -91,7 +91,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
       <FieldGroup title="Skills" subtitle="Dynamic structured skill entries with level and years of experience.">
         <div className="grid gap-4">
           {profile.skills.map((skill, index) => (
-            <div key={`skill-${index}`} className="grid gap-3 rounded-3xl border border-sky-100 bg-white p-4 md:grid-cols-[1.4fr_1fr_0.8fr_auto]">
+            <div key={`skill-${index}`} className="grid gap-3 rounded-3xl border border-brand-100 bg-white p-4 md:grid-cols-[1.4fr_1fr_0.8fr_auto]">
               <TextInput
                 placeholder="Skill name"
                 value={skill.name}
@@ -133,7 +133,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
         <FieldGroup title="Languages" subtitle="Optional language proficiency details for global roles.">
           <div className="grid gap-4">
             {profile.languages.map((language, index) => (
-              <div key={`language-${index}`} className="grid gap-3 rounded-3xl border border-sky-100 bg-white p-4 md:grid-cols-[1.2fr_1fr_auto]">
+              <div key={`language-${index}`} className="grid gap-3 rounded-3xl border border-brand-100 bg-white p-4 md:grid-cols-[1.2fr_1fr_auto]">
                 <TextInput
                   placeholder="Language"
                   value={language.name}
@@ -165,7 +165,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
       <FieldGroup title="Experience" subtitle="Work history entries used directly in deterministic scoring and AI explanations.">
         <div className="grid gap-4">
           {profile.experience.map((experience, index) => (
-            <div key={`experience-${index}`} className="grid gap-4 rounded-3xl border border-sky-100 bg-white p-4">
+            <div key={`experience-${index}`} className="grid gap-4 rounded-3xl border border-brand-100 bg-white p-4">
               <div className="grid gap-3 md:grid-cols-2">
                 <TextInput placeholder="Company" value={experience.company} onChange={(event) => setProfile((current) => ({
                   ...current,
@@ -219,7 +219,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
       <FieldGroup title="Projects" subtitle="Projects are a major ranking signal in the hybrid scoring system.">
         <div className="grid gap-4">
           {profile.projects.map((project, index) => (
-            <div key={`project-${index}`} className="grid gap-4 rounded-3xl border border-sky-100 bg-white p-4">
+            <div key={`project-${index}`} className="grid gap-4 rounded-3xl border border-brand-100 bg-white p-4">
               <div className="grid gap-3 md:grid-cols-2">
                 <TextInput placeholder="Project name" value={project.name} onChange={(event) => setProfile((current) => ({
                   ...current,
@@ -256,7 +256,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
           <FieldGroup title="Education" subtitle="Add academic history relevant to the target role.">
             <div className="grid gap-4">
               {profile.education.map((education, index) => (
-                <div key={`education-${index}`} className="grid gap-3 rounded-3xl border border-sky-100 bg-white p-4 md:grid-cols-[1.2fr_1fr_1fr_0.6fr_0.6fr_auto]">
+                <div key={`education-${index}`} className="grid gap-3 rounded-3xl border border-brand-100 bg-white p-4 md:grid-cols-[1.2fr_1fr_1fr_0.6fr_0.6fr_auto]">
                   <TextInput placeholder="Institution" value={education.institution} onChange={(event) => setProfile((current) => ({
                     ...current,
                     education: current.education.map((item, itemIndex) => itemIndex === index ? { ...item, institution: event.target.value } : item)
@@ -289,7 +289,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
           <FieldGroup title="Certifications" subtitle="Optional certifications improve explainability and can affect ranking.">
             <div className="grid gap-4">
               {profile.certifications.map((certification, index) => (
-                <div key={`certification-${index}`} className="grid gap-3 rounded-3xl border border-sky-100 bg-white p-4 md:grid-cols-[1fr_1fr_0.8fr_0.8fr_0.8fr_auto]">
+                <div key={`certification-${index}`} className="grid gap-3 rounded-3xl border border-brand-100 bg-white p-4 md:grid-cols-[1fr_1fr_0.8fr_0.8fr_0.8fr_auto]">
                   <TextInput placeholder="Certification" value={certification.name} onChange={(event) => setProfile((current) => ({
                     ...current,
                     certifications: current.certifications.map((item, itemIndex) => itemIndex === index ? { ...item, name: event.target.value } : item)
@@ -333,7 +333,7 @@ export function TalentProfileEditor({ profile, setProfile, compact = false }: Ta
           <FieldGroup title="Social Links" subtitle="Portfolio and social proof links help the recruiter validate fit quickly.">
             <div className="grid gap-4">
               {profile.socialLinks.map((link, index) => (
-                <div key={`social-${index}`} className="grid gap-3 rounded-3xl border border-sky-100 bg-white p-4 md:grid-cols-[0.9fr_1.4fr_auto]">
+                <div key={`social-${index}`} className="grid gap-3 rounded-3xl border border-brand-100 bg-white p-4 md:grid-cols-[0.9fr_1.4fr_auto]">
                   <TextInput placeholder="Platform" value={link.platform} onChange={(event) => setProfile((current) => ({
                     ...current,
                     socialLinks: current.socialLinks.map((item, itemIndex) => itemIndex === index ? { ...item, platform: event.target.value } : item)

@@ -62,12 +62,12 @@ export default function RecruiterDashboard() {
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-      <Card className="p-8">
+    <div className="grid gap-6 xl:grid-cols-[1.03fr_0.97fr]">
+      <Card className="anim-fade-up p-6 md:p-8">
         <SectionHeading
           eyebrow="Recruiter Setup"
-          title="Create a job with ranking-ready criteria"
-          subtitle="The deterministic scoring engine uses skills, experience, projects, education, certifications, and availability before Gemini adds explainable reasoning."
+          title="Design a job with clear ranking signals"
+          subtitle="Define requirements once and let structured scoring plus Gemini produce transparent shortlist intelligence."
         />
         <form onSubmit={submitJob} className="grid gap-4">
           <TextInput name="title" placeholder="Job title" required />
@@ -84,18 +84,18 @@ export default function RecruiterDashboard() {
             <TextInput name="eligibility" placeholder="Eligibility criteria" required />
             <TextInput name="jobType" placeholder="Job type e.g. Remote, Full-time" required />
           </div>
-          <button className="rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white">Publish Job</button>
+          <button className="rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Publish Job</button>
         </form>
       </Card>
 
-      <Card className="p-8">
+      <Card className="anim-fade-up anim-delay-1 p-6 md:p-8">
         <SectionHeading
           eyebrow="AI Screening"
-          title="Applicants, structured profiles, and analysis"
-          subtitle="Select a job, inspect incoming candidate data, and launch multi-candidate evaluation through the weighted scoring plus Gemini reasoning pipeline."
+          title="Review applicants and trigger analysis"
+          subtitle="Select a job, inspect incoming talent data, and run explainable multi-candidate ranking."
         />
         <select
-          className="mb-4 w-full rounded-2xl border border-sky-100 bg-white px-4 py-3 text-sm"
+          className="mb-4 w-full rounded-2xl border border-brand-100 bg-white px-4 py-3 text-sm"
           value={selectedJobId}
           onChange={(event) => setSelectedJobId(event.target.value)}
         >
@@ -108,8 +108,8 @@ export default function RecruiterDashboard() {
         </select>
 
         {selectedJob && (
-          <div className="mb-5 rounded-[28px] border border-sky-100 bg-sky-50/70 p-5">
-            <p className="text-lg font-semibold text-slate-900">{selectedJob.title}</p>
+          <div className="mb-5 rounded-[26px] border border-brand-100 bg-brand-50/80 p-5">
+            <p className="text-lg font-bold text-slate-900">{selectedJob.title}</p>
             <p className="mt-2 text-sm text-slate-600">{selectedJob.description}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {selectedJob.requiredSkills.map((skill, index) => <Pill key={`selected-job-skill-${index}-${skill}`}>{skill}</Pill>)}
@@ -124,10 +124,10 @@ export default function RecruiterDashboard() {
             const matchedSkills = profile.skills.slice(0, 5);
 
             return (
-              <div key={application._id} className="rounded-[28px] border border-sky-100 bg-white p-5">
+              <div key={application._id} className="rounded-[24px] border border-brand-100 bg-white p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-semibold text-slate-800">{name}</p>
+                    <p className="font-bold text-slate-800">{name}</p>
                     <p className="text-sm text-slate-500">{profile.basicInfo.headline || profile.basicInfo.location}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {matchedSkills.map((skill) => (
@@ -147,15 +147,15 @@ export default function RecruiterDashboard() {
                   </div>
                 </div>
                 <div className="mt-4 grid gap-3 md:grid-cols-3">
-                  <div className="rounded-2xl bg-sky-50 p-3 text-sm text-slate-700">
+                  <div className="rounded-2xl bg-brand-50 p-3 text-sm text-slate-700">
                     <p className="font-semibold text-slate-900">Projects</p>
                     <p className="mt-1">{profile.projects.length} structured project entries</p>
                   </div>
-                  <div className="rounded-2xl bg-sky-50 p-3 text-sm text-slate-700">
+                  <div className="rounded-2xl bg-brand-50 p-3 text-sm text-slate-700">
                     <p className="font-semibold text-slate-900">Availability</p>
                     <p className="mt-1">{profile.availability.status || "Not specified"}</p>
                   </div>
-                  <div className="rounded-2xl bg-sky-50 p-3 text-sm text-slate-700">
+                  <div className="rounded-2xl bg-brand-50 p-3 text-sm text-slate-700">
                     <p className="font-semibold text-slate-900">CV Parse</p>
                     <p className="mt-1">{application.extractedData?.parseConfidence ?? 0}% confidence</p>
                   </div>
@@ -165,7 +165,7 @@ export default function RecruiterDashboard() {
           })}
         </div>
 
-        <div className="mt-6 flex items-center gap-4">
+        <div className="mt-6 flex flex-wrap items-center gap-4">
           <button className="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white" onClick={runAnalysis}>
             {aiState.loading ? "Analyzing candidates..." : "Analyze Candidates"}
           </button>
@@ -176,7 +176,7 @@ export default function RecruiterDashboard() {
           )}
         </div>
         {aiState.loading && (
-          <div className="mt-4 rounded-2xl bg-sky-50 p-4 text-sm text-sky-800">
+          <div className="mt-4 rounded-2xl bg-brand-50 p-4 text-sm text-brand-900">
             Gemini is comparing all applicants, validating the weighted baseline, and generating explainable shortlist reasoning.
           </div>
         )}

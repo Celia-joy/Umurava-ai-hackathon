@@ -40,23 +40,23 @@ export default function ApplyPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <Card className="p-8">
+      <Card className="hero-glow anim-fade-up p-6 md:p-8">
         <SectionHeading
           eyebrow="Application Intake"
-          title="Submit structured profile data with your CV"
-          subtitle="This form supports hybrid ingestion: dynamic profile fields plus optional PDF upload for unstructured resume parsing."
+          title="Submit your profile and resume"
+          subtitle="Use structured talent fields to give recruiters and AI a clearer picture of your experience, not just keywords."
         />
         <form onSubmit={handleSubmit} className="space-y-5">
-          <FieldGroup title="CV Upload" subtitle="PDF parsing is supported. Structured profile fields below improve extraction quality and fairness.">
+          <FieldGroup title="CV Upload" subtitle="PDF parsing is supported. Structured profile details below improve matching quality.">
             <TextInput type="file" accept=".pdf,.csv,text/csv,application/pdf" onChange={(event) => setFile(event.target.files?.[0] || null)} />
-            <p className="text-xs text-slate-500">Supported formats: PDF and CSV. You can also submit using the structured profile alone if your CV is not ready.</p>
+            <p className="text-xs text-slate-500">Supported formats: PDF and CSV. You can still apply with structured profile data only.</p>
           </FieldGroup>
 
           <TalentProfileEditor profile={profile} setProfile={setProfile} compact />
 
           {error && <p className="text-sm text-red-500">{error}</p>}
-          {success && <p className="text-sm text-green-600">{success}</p>}
-          <button className="rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white" disabled={loading}>
+          {success && <p className="text-sm text-emerald-600">{success}</p>}
+          <button className="rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700" disabled={loading}>
             {loading ? "Submitting..." : "Submit Application"}
           </button>
         </form>
