@@ -23,14 +23,17 @@ export const register = async (req: Request, res: Response) => {
     role,
     profile: profile ? normalizeTalentProfile(profile) : undefined
   });
- // let us send a welcome email to the user after registration
-  await emailService.sendRegistrationEmail(email, profile?.name || "User");
-  
+  // let us send a welcome email to the user after registration
+  try {
+    await emailService.sendRegistrationEmail(email, profile?.name || "User");
+  } catch (error) {
+    console.error("Error sending welcome email:", error);
+  }
   return res.status(201).json({
     token: signToken(user),
     user: await User.findById(user._id).select("-password")
   });
-  
+
 };
 
 export const login = async (req: Request, res: Response) => {

@@ -79,7 +79,11 @@ export const sendRegistrationEmail = async (to: string, name: string) => {
           env.corsOrigin || "#"
         ),
     };
-    await transporter.sendMail(mailOptions);
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error("Error sending welcome email:", error);
+    }
 };
 
 // password reset email
@@ -95,7 +99,11 @@ export const sendPasswordResetEmail = async (to: string, name: string, resetLink
           resetLink
         ),
     };
-    await transporter.sendMail(mailOptions);
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+    }
 };
 
 // email verification
