@@ -7,8 +7,13 @@ import aiRoutes from "./routes/aiRoutes";
 import applicationRoutes from "./routes/applicationRoutes";
 import authRoutes from "./routes/authRoutes";
 import jobRoutes from "./routes/jobRoutes";
-
+import rateLimit from "express-rate-limit";
 const app = express();
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100
+});
+app.use(limiter);
 
 app.use(
   cors({
