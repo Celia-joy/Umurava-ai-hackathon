@@ -1,4 +1,6 @@
 .codex
+.env.docker
+*.env
 .env
 .env.example
 node_modules/
