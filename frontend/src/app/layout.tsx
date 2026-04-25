@@ -7,7 +7,7 @@ import { StoreProvider } from "@/store/provider";
 const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Umurava RecruitAI",
+  title: "Umurava AI",
   description: "AI-powered recruitment screening platform"
 };
 
