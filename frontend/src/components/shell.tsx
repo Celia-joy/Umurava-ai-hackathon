@@ -8,10 +8,10 @@ import { hydrateAuth, logout } from "@/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 const navItems = [
-  { href: "/jobs", label: "For Talents" },
-  { href: "/dashboard/recruiter", label: "For Business" },
-  { href: "/dashboard/applicant", label: "Join the Platform" },
-  { href: "/", label: "About Us" }
+  { href: "/jobs", label: "Explore Opportunities" },
+  { href: "/dashboard/recruiter", label: "Recruiter Workspace" },
+  { href: "/dashboard/applicant", label: "Talent Profile" },
+  { href: "/", label: "About Umurava AI" }
 ] as const;
 
 export function AppShell({ children }: PropsWithChildren) {
@@ -41,7 +41,9 @@ export function AppShell({ children }: PropsWithChildren) {
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 text-sm font-bold text-white transition group-hover:scale-105">
               U
             </span>
-            <span className="block text-base font-bold tracking-tight text-slate-900 md:text-lg">Umurava AI</span>
+            <span className="block text-base font-bold tracking-tight text-slate-900 md:text-lg">
+              Umurava AI
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
@@ -51,7 +53,9 @@ export function AppShell({ children }: PropsWithChildren) {
                 href={item.href}
                 className={clsx(
                   "rounded-lg px-3 py-2 text-sm font-semibold transition",
-                  pathname === item.href ? "bg-slate-100 text-slate-900" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  pathname === item.href
+                    ? "bg-slate-100 text-slate-900"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 )}
               >
                 {item.label}
@@ -63,10 +67,13 @@ export function AppShell({ children }: PropsWithChildren) {
                 className="ml-3 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
                 onClick={() => dispatch(logout())}
               >
-                Logout
+                Sign Out
               </button>
             ) : (
-              <Link href="/auth" className="ml-3 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">
+              <Link
+                href="/auth"
+                className="ml-3 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
+              >
                 Get Started
               </Link>
             )}
@@ -90,7 +97,9 @@ export function AppShell({ children }: PropsWithChildren) {
                   href={item.href}
                   className={clsx(
                     "rounded-lg px-4 py-3 text-sm font-semibold",
-                    pathname === item.href ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-700"
+                    pathname === item.href
+                      ? "bg-slate-900 text-white"
+                      : "bg-slate-50 text-slate-700"
                   )}
                 >
                   {item.label}
@@ -98,13 +107,21 @@ export function AppShell({ children }: PropsWithChildren) {
               ))}
             </div>
             <div className="mt-4 flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3">
-              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{activeRoleLabel}</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                {activeRoleLabel}
+              </span>
               {user ? (
-                <button className="rounded-md bg-brand-600 px-4 py-2 text-xs font-semibold text-white" onClick={() => dispatch(logout())}>
-                  Logout
+                <button
+                  className="rounded-md bg-brand-600 px-4 py-2 text-xs font-semibold text-white"
+                  onClick={() => dispatch(logout())}
+                >
+                  Sign Out
                 </button>
               ) : (
-                <Link href="/auth" className="rounded-md bg-brand-600 px-4 py-2 text-xs font-semibold text-white">
+                <Link
+                  href="/auth"
+                  className="rounded-md bg-brand-600 px-4 py-2 text-xs font-semibold text-white"
+                >
                   Get Started
                 </Link>
               )}
@@ -113,45 +130,62 @@ export function AppShell({ children }: PropsWithChildren) {
         )}
       </header>
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 md:py-10">{children}</main>
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 md:py-10">
+        {children}
+      </main>
 
       <footer className="mt-12 border-t border-slate-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-4 md:px-6">
           <div>
             <h3 className="text-base font-bold text-slate-900">Umurava AI</h3>
-            <p className="mt-3 text-sm text-slate-600">Analyse applicants with a single button click and apply in one go for more.</p>
+            <p className="mt-3 text-sm text-slate-600">
+              AI-powered recruitment platform that enables efficient candidate screening, ranking, and hiring insights.
+            </p>
             <p className="mt-4 text-sm text-slate-600">umurava@ai.africa</p>
             <p className="text-sm text-slate-600">+250 796932693</p>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">Skills Challenges</h4>
+            <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">
+              AI Capabilities
+            </h4>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
               <li>AI Candidate Screening</li>
-              <li>Talent Profile Analysis</li>
-              <li>Smart Shortlisting</li>
+              <li>Candidate Ranking</li>
+              <li>Skill Gap Analysis</li>
               <li>Recruitment Insights</li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">Solutions</h4>
+            <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">
+              Solutions
+            </h4>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
-              <li>For Talents</li>
-              <li>For Education</li>
-              <li>For Businesses</li>
+              <li>For Talent</li>
+              <li>For Recruiters</li>
+              <li>For Organizations</li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">Newsletter</h4>
-            <p className="mt-3 text-sm text-slate-600">Join our newsletter to keep up to date with us.</p>
-            <Link href="/auth" className="mt-4 inline-flex rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">
+            <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">
+              Stay Updated
+            </h4>
+            <p className="mt-3 text-sm text-slate-600">
+              Get updates on AI-driven hiring tools, insights, and opportunities.
+            </p>
+            <Link
+              href="/auth"
+              className="mt-4 inline-flex rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
+            >
               Subscribe
             </Link>
           </div>
         </div>
-        <div className="border-t border-slate-200 py-4 text-center text-xs text-slate-500">Copyright © All Rights Reserved Umurava 2026.</div>
+        <div className="border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+          Copyright © All Rights Reserved Umurava 2026.
+        </div>
       </footer>
     </div>
   );
