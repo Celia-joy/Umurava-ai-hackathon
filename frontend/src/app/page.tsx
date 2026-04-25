@@ -32,10 +32,10 @@ export default function Home() {
               Build Work Experience
             </span>
             <h1 className="text-3xl font-bold leading-tight text-slate-900 md:text-5xl">
-              Unlock your potential with the Umurava Competence Platform
+              Unlock your potential with the Umurava AI 
             </h1>
             <p className="text-base text-slate-600 md:text-lg">
-              Experience practical assessments, challenge-based learning, and AI-assisted hiring insights in one unified platform.
+              Experience AI-assisted hiring insights in one unified platform.
             </p>
             <div className="flex flex-wrap gap-3 md:gap-4">
               <Link href="/auth" className="rounded-md bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">
