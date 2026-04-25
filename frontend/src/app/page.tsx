@@ -51,7 +51,7 @@ export default function Home() {
         <Card className="anim-fade-up anim-delay-1 p-7 md:p-8">
           <SectionHeading
             eyebrow="Challenge Outcomes"
-            title="How Competence Works"
+            title="How Umurava AI Works"
             subtitle="A production-ready hiring workflow built for measurable outcomes."
           />
           <div className="space-y-3">
