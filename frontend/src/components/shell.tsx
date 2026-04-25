@@ -41,7 +41,7 @@ export function AppShell({ children }: PropsWithChildren) {
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 text-sm font-bold text-white transition group-hover:scale-105">
               U
             </span>
-            <span className="block text-base font-bold tracking-tight text-slate-900 md:text-lg">Competence by Umurava</span>
+            <span className="block text-base font-bold tracking-tight text-slate-900 md:text-lg">Umurava AI</span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
@@ -118,7 +118,7 @@ export function AppShell({ children }: PropsWithChildren) {
       <footer className="mt-12 border-t border-slate-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-4 md:px-6">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Competence by Umurava</h3>
+            <h3 className="text-base font-bold text-slate-900">Umurava AI</h3>
             <p className="mt-3 text-sm text-slate-600">Build work experience through real-world challenges, hackathons, and verified portfolio projects.</p>
             <p className="mt-4 text-sm text-slate-600">competence@umurava.africa</p>
             <p className="text-sm text-slate-600">+250 789 263 354</p>
