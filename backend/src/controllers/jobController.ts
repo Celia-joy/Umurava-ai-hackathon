@@ -11,6 +11,8 @@ export const createJob = async (req: AuthenticatedRequest, res: Response) => {
       recruiter: recruiterId
     });
 
+    alert("Job created successfully")
+
     return res.status(201).json(job);
 
   } catch (err) {
@@ -80,7 +82,7 @@ export const deleteJob = async (req: AuthenticatedRequest, res: Response) => {
       throw new AppError("Job not found", 404);
     }
     if (job.recruiter.toString() !== req.user?.id) {
-      throw new AppError("Unauthorized",  403);
+      throw new AppError("Unauthorized", 403);
     }
 
     await job.deleteOne();
