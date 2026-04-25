@@ -52,7 +52,7 @@ export default function Home() {
           <SectionHeading
             eyebrow="Challenge Outcomes"
             title="How Competence Works"
-            subtitle="A production-ready challenge and hiring workflow built for measurable outcomes."
+            subtitle="A production-ready hiring workflow built for measurable outcomes."
           />
           <div className="space-y-3">
             {challengeHighlights.map((item) => (
