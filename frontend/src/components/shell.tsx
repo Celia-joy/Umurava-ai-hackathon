@@ -119,18 +119,18 @@ export function AppShell({ children }: PropsWithChildren) {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-4 md:px-6">
           <div>
             <h3 className="text-base font-bold text-slate-900">Umurava AI</h3>
-            <p className="mt-3 text-sm text-slate-600">Build work experience through real-world challenges, hackathons, and verified portfolio projects.</p>
-            <p className="mt-4 text-sm text-slate-600">competence@umurava.africa</p>
-            <p className="text-sm text-slate-600">+250 789 263 354</p>
+            <p className="mt-3 text-sm text-slate-600">Analyse applicants with a single button click and apply in one go for more.</p>
+            <p className="mt-4 text-sm text-slate-600">umurava@ai.africa</p>
+            <p className="text-sm text-slate-600">+250 796932693</p>
           </div>
 
           <div>
             <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-slate-900">Skills Challenges</h4>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
-              <li>Hackathons</li>
-              <li>Competitions</li>
-              <li>Job-Role Assessments</li>
-              <li>Practices</li>
+              <li>AI Candidate Screening</li>
+              <li>Talent Profile Analysis</li>
+              <li>Smart Shortlisting</li>
+              <li>Recruitment Insights</li>
             </ul>
           </div>
 
