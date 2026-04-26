@@ -19,7 +19,7 @@ export default function RecruiterDashboard() {
   const aiState = useAppSelector((state) => state.ai);
   const [selectedJobId, setSelectedJobId] = useState("");
 
-  // ✅ New state for success alert
+  // New state for success alert
   const [jobSuccess, setJobSuccess] = useState(false);
 
   useEffect(() => {

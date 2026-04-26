@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Card, SectionHeading } from "@/components/ui";
 
 const challengeHighlights = [
-  "Build real-world work experience through hands-on challenges and project simulations.",
   "Get ranked with transparent, skill-based scoring and portfolio-ready outcomes.",
   "Connect with recruiters and employers using verified evidence of competence."
 ];
